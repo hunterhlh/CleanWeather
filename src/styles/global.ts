@@ -4,35 +4,33 @@ import { StyleSheet } from 'react-native';
 
 
 export const Sunnycolors = {
-  background: '#ede4cf',
-  header: '#242444',
-  surface: '#2a2a4a',
-  primary: '#4fc3f7',
+  background: '#f5e4bd',
   text: '#1c1a16',
   textSecondary: '#6b6557',
-  alert: '#ff5252',
-};``
-
-
-export const Rainingcolors = {
-  background: '#ede4cf',
-  header: '#242444',
-  surface: '#2a2a4a',
-  primary: '#4fc3f7',
-  text: '#ffffff',
-  textSecondary: '#a0a0b0',
-  alert: '#ff5252',
 };
 
+export const Rainingcolors = {
+  background: '#1d242e',
+  text: '#eef2f7',
+  textSecondary: '#8d97a6',
+};
+
+export const Cloudycolors = {
+  background: '#e3e4e2',
+  text: '#23262a',
+  textSecondary: '#74766f',
+};
 
 export const Snowcolors = {
-  background: '#ede4cf',
-  header: '#242444',
-  surface: '#2a2a4a',
-  primary: '#4fc3f7',
-  text: '#ffffff',
-  textSecondary: '#a0a0b0',
-  alert: '#ff5252',
+  background: '#ffffff',
+  text: '#1d2530',
+  textSecondary: '#6a7585',
+};
+
+export const Emergencycolors = {
+  background: '#1a1311',
+  text: '#f7ece9',
+  textSecondary: '#b59a95',
 };
 
 export const globalStyles = StyleSheet.create({
@@ -42,26 +40,12 @@ export const globalStyles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: Sunnycolors.text,
-  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     color: Sunnycolors.textSecondary,
     marginTop: 30,
     marginBottom: 16,
-  },
-  empty: {
-    color: Sunnycolors.textSecondary,
-    fontSize: 14,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   headerloctime: {
     flex: 1,
@@ -73,10 +57,22 @@ export const globalStyles = StyleSheet.create({
     fontWeight: '400',
    },
   temperature: {
-    fontSize: 150,
+    fontSize: 148,
     color: Sunnycolors.text,
     fontFamily: 'InterTight',
-    fontWeight: '300'
+    fontWeight: '100'
+   },
+  rightNow: {
+    fontSize: 15,
+    color: Sunnycolors.textSecondary,
+    fontFamily: 'JetBrainsMono',
+    fontWeight: '400',
+   },
+   feels: {
+    fontSize: 18,
+    color: Sunnycolors.textSecondary,
+    fontFamily: 'JetBrainsMono',
+    fontWeight: '400',
    }
 });
 
