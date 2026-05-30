@@ -37,32 +37,36 @@ const stableCoords = useMemo(() => ({ latitude, longitude }), [
     console.log(weatherData)
 
     
- const { newStyle, newImage } = weatherData ? styleChanges(weatherData) : { newStyle: 'Sunnycolors', newImage: 'sun.png' };
-  
+ const { backgroundColor, primaryTextColor, secondaryTextColor, newImage } = weatherData ? styleChanges(weatherData) : { backgroundColor: '#ede4cf', primaryTextColor: '#1c1a16', secondaryTextColor: '#6b6557', newImage: 'sun.png' };
+
+console.log(backgroundColor, primaryTextColor, secondaryTextColor, newImage)
+
  const today = new Date();
  const day = today.getDate();
  const month = today.getMonth() + 1;
  const myDate = `${month}/${day}`
 
   return (
-    <ScrollView style={[{ flex: 1, paddingTop: 60, paddingHorizontal: 20 }, newStyle]}>
+    <ScrollView style={[{ flex: 1, paddingTop: 60, paddingHorizontal: 20 }, { backgroundColor }]}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Image source={require('../../assets/weatherImages/location-pin.png')} style={{ width: 20, height: 22, tintColor: '#1c1a16'}} />
-        <Text style={[globalStyles.headerloctime, { flex: 1, textAlign: 'left' }]}>{city.toUpperCase()}, {region.toUpperCase()}</Text>
-        <Text style={[globalStyles.headerloctime, { flex: 1, textAlign: 'right' }]}>{new Date().toDateString().slice(0, 3)} • {myDate}</Text>
+        <Image source={require('../../assets/weatherImages/location-pin.png')} style={{ width: 20, height: 22, tintColor: '#c8753a'}} />
+        <Text style={[globalStyles.headerloctime, { flex: 1, textAlign: 'left', color: '#c8753a' }]}>{city.toUpperCase()}, {region.toUpperCase()}</Text>
+        <Text style={[globalStyles.headerloctime, { flex: 1, textAlign: 'right', color: '#c8753a' }]}>{new Date().toDateString().slice(0, 3)} • {myDate}</Text>
       </View>
       <View style={{justifyContent: 'center', minHeight: height * 0.35, }}> 
-        <Text style={[globalStyles.rightNow, {textAlign: 'left', marginBottom: -(height * 0.02)}]}>{"RIGHT NOW"}</Text>
+        <Text style={[globalStyles.rightNow, {textAlign: 'left', marginBottom: -(height * 0.02), color: secondaryTextColor }]}>{"RIGHT NOW"}</Text>
         <View style={{flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
-          <Text style={globalStyles.temperature}>{weatherData?.main?.temp?.toFixed(0)}<Text style={{ fontSize: 120, lineHeight: globalStyles.temperature.fontSize, includeFontPadding: false   }}>°</Text></Text>
+          <Text style={[globalStyles.temperature, { color: primaryTextColor }]}>{weatherData?.main?.temp?.toFixed(0)}
+            <Text style={{ fontSize: 120, lineHeight: globalStyles.temperature.fontSize, includeFontPadding: false   }}>°</Text>
+          </Text>
           <Image source={newImage} style={{ width: 50, height: 50, tintColor: '#c8753a', marginTop: height * 0.05}} />
         </View>
-        <Text style={globalStyles.sectionTitle}>{weatherData?.weather?.[0]?.description}</Text>
+        <Text style={[globalStyles.sectionTitle, { color: '#c8753a' }]}>{weatherData?.weather?.[0]?.description}</Text>
       </View> 
       <View style={{flexDirection: 'row', gap:20}}>
-        <Text style={globalStyles.feels}><Text style={newStyle}>{weatherData?.main?.feels_like.toFixed(0)}°</Text><Text >feels</Text></Text>
-        <Text style={globalStyles.feels}><Text style={newStyle}>{weatherData?.main?.humidity.toFixed(0)}% </Text><Text>hum</Text></Text>
-        <Text style={globalStyles.feels}><Text style={newStyle}>{weatherData?.wind?.speed.toFixed(1)} </Text><Text>wind</Text></Text>
+        <Text style={globalStyles.feels}><Text style={{color: primaryTextColor}}>{weatherData?.main?.feels_like.toFixed(0)}°</Text><Text style={{color: secondaryTextColor}}>feels</Text></Text>
+        <Text style={globalStyles.feels}><Text style={{color: primaryTextColor}}>{weatherData?.main?.humidity.toFixed(0)}% </Text><Text style={{color: secondaryTextColor}}>hum</Text></Text>
+        <Text style={globalStyles.feels}><Text style={{color: primaryTextColor}}>{weatherData?.wind?.speed.toFixed(1)} </Text><Text style={{color: secondaryTextColor}}>wind</Text></Text>
       </View>
       <View style={{ borderBottomWidth: 1, borderBottomColor: '#6b655740', marginTop: height * 0.02, marginHorizontal: width * 0.005}}></View>
     </ScrollView>
