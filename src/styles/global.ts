@@ -36,7 +36,6 @@ export const Emergencycolors = {
 export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Sunnycolors.background,
     paddingTop: 60,
     paddingHorizontal: 20,
   },
@@ -70,7 +69,7 @@ export const globalStyles = StyleSheet.create({
    },
    feels: {
     fontSize: 18,
-    color: Sunnycolors.textSecondary,
+    //color: Sunnycolors.textSecondary,
     fontFamily: 'JetBrainsMono',
     fontWeight: '400',
    }
