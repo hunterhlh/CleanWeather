@@ -6,11 +6,10 @@ export const globalStyles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 20,
   },
-  sectionTitle: {
-    fontSize: 18,
+  desc: {
+    fontSize: 28,
     fontWeight: "600",
-    marginTop: 30,
-    marginBottom: 16,
+    fontFamily: "InterTight",
   },
   headerloctime: {
     flex: 1,
