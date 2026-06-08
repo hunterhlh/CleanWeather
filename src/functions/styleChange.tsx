@@ -1,5 +1,5 @@
 export default function (weatherData: any) {
-  const weatherCondition = weatherData?.weatherCode;
+  const weatherCondition = weatherData?.current_weathercode;
 
   let newImage: any = require("../../assets/weatherImages/sun.png");
   let primaryTextColor: any = "#e8d5a3";

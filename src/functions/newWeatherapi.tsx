@@ -1,165 +1,124 @@
 import { fetchWeatherApi } from "openmeteo";
 
-export async function fetchWeather(
-  latitude: string,
-  longitude: string,
-  daysAhead: number = 0,
-) {
-  const params = {
-    latitude,
-    longitude,
-    daily: "weather_code",
-    hourly: [
-      "temperature_2m",
-      "relative_humidity_2m",
-      "apparent_temperature",
-      "precipitation_probability",
-      "precipitation",
-      "rain",
-      "showers",
-      "snowfall",
-      "snow_depth",
-      "weather_code",
-      "pressure_msl",
-      "cloud_cover",
-      "visibility",
-      "wind_speed_10m",
-      "wind_speed_80m",
-      "wind_speed_120m",
-      "wind_direction_10m",
-      "wind_direction_80m",
-      "wind_direction_120m",
-      "wind_gusts_10m",
-      "temperature_80m",
-      "temperature_120m",
-      "temperature_180m",
-    ],
-    models: "best_match",
-    temperature_unit: "fahrenheit",
-  };
-  const url = "https://api.open-meteo.com/v1/forecast";
-  const responses = await fetchWeatherApi(url, params);
 
-  // Process first location. Add a for-loop for multiple locations or weather models
-  const response = responses[0];
+export async function fetchWeather(latitude: string, longitude: string) {
 
-  // Attributes for timezone and location
-  const elevation = response.elevation();
-  const utcOffsetSeconds = response.utcOffsetSeconds();
+const params = {
+  latitude,
+  longitude,
+	daily: ["weather_code", "temperature_2m_max", "temperature_2m_min", "apparent_temperature_max", "apparent_temperature_min"],
+	hourly: ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "precipitation_probability", "rain", "showers", "weather_code", "wind_speed_10m", "temperature_80m", "uv_index", "wind_direction_10m"],
+	models: "best_match",
+	current: ["temperature_2m", "apparent_temperature", "precipitation", "rain", "showers", "snowfall", "weather_code", "cloud_cover", "wind_speed_10m", "wind_direction_10m", "relative_humidity_2m"],
+	minutely_15: ["temperature_2m", "relative_humidity_2m", "apparent_temperature", "precipitation", "wind_speed_10m", "weather_code", "wind_direction_10m"],
+	wind_speed_unit: "mph",
+	temperature_unit: "fahrenheit",
+	precipitation_unit: "inch",
+};
+const url = "https://api.open-meteo.com/v1/forecast";
+const responses = await fetchWeatherApi(url, params);
 
-  console.log(
-    `\nCoordinates: ${latitude}°N ${longitude}°E`,
-    `\nElevation: ${elevation}m asl`,
-    `\nTimezone difference to GMT+0: ${utcOffsetSeconds}s`,
-  );
+// Process first location. Add a for-loop for multiple locations or weather models
+const response = responses[0];
 
-  const hourly = response.hourly()!;
-  const daily = response.daily()!;
+// Attributes for timezone and location
 
-  // Note: The order of weather variables in the URL query and the indices below need to match!
-  const weatherData = {
-    hourly: {
-      time: Array.from(
-        {
-          length:
-            (Number(hourly.timeEnd()) - Number(hourly.time())) /
-            hourly.interval(),
-        },
-        (_, i) =>
-          new Date(
-            (Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) *
-              1000,
-          ),
-      ),
-      temperature_2m: hourly.variables(0)!.valuesArray(),
-      relative_humidity_2m: hourly.variables(1)!.valuesArray(),
-      apparent_temperature: hourly.variables(2)!.valuesArray(),
-      precipitation_probability: hourly.variables(3)!.valuesArray(),
-      precipitation: hourly.variables(4)!.valuesArray(),
-      rain: hourly.variables(5)!.valuesArray(),
-      showers: hourly.variables(6)!.valuesArray(),
-      snowfall: hourly.variables(7)!.valuesArray(),
-      snow_depth: hourly.variables(8)!.valuesArray(),
-      weather_code: hourly.variables(9)!.valuesArray(),
-      pressure_msl: hourly.variables(10)!.valuesArray(),
-      cloud_cover: hourly.variables(11)!.valuesArray(),
-      visibility: hourly.variables(12)!.valuesArray(),
-      wind_speed_10m: hourly.variables(13)!.valuesArray(),
-      wind_speed_80m: hourly.variables(14)!.valuesArray(),
-      wind_speed_120m: hourly.variables(15)!.valuesArray(),
-      wind_direction_10m: hourly.variables(16)!.valuesArray(),
-      wind_direction_80m: hourly.variables(17)!.valuesArray(),
-      wind_direction_120m: hourly.variables(18)!.valuesArray(),
-      wind_gusts_10m: hourly.variables(19)!.valuesArray(),
-      temperature_80m: hourly.variables(20)!.valuesArray(),
-      temperature_120m: hourly.variables(21)!.valuesArray(),
-      temperature_180m: hourly.variables(22)!.valuesArray(),
-    },
-    daily: {
-      time: Array.from(
-        {
-          length:
-            (Number(daily.timeEnd()) - Number(daily.time())) / daily.interval(),
-        },
-        (_, i) =>
-          new Date(
-            (Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) *
-              1000,
-          ),
-      ),
-      weather_code: daily.variables(0)!.valuesArray(),
-    },
-  };
+const elevation = response.elevation();
+const utcOffsetSeconds = response.utcOffsetSeconds();
 
-  const forecast = [1, 2, 3, 4, 5].map((daysAhead) => {
-    const target = new Date();
-    target.setDate(target.getDate() + daysAhead);
-    const index = weatherData.hourly.time.findIndex(
-      (t) => t.getDate() === target.getDate() && t.getHours() === 12,
-    );
-    return {
-      temp: weatherData.hourly.temperature_2m?.[index],
-      weatherCode: weatherData.hourly.weather_code?.[index],
-    };
-  });
+console.log(
+	`\nCoordinates: ${latitude}°N ${longitude}°E`,
+	`\nElevation: ${elevation}m asl`,
+	`\nTimezone difference to GMT+0: ${utcOffsetSeconds}s`,
+);
 
-  const now = new Date();
-  const currentHourIndex = weatherData.hourly.time.findIndex(
-    (t) =>
-      t.getFullYear() === now.getFullYear() &&
-      t.getMonth() === now.getMonth() &&
-      t.getDate() === now.getDate() &&
-      t.getHours() === now.getHours(),
-  );
+const current = response.current()!;
+const minutely15 = response.minutely15()!;
+const hourly = response.hourly()!;
+const daily = response.daily()!;
 
-  return {
-    temp: weatherData?.hourly?.temperature_2m?.[currentHourIndex],
-    humidity: weatherData?.hourly?.relative_humidity_2m?.[currentHourIndex],
-    feelsLike: weatherData?.hourly?.apparent_temperature?.[currentHourIndex],
-    precipitation_probability:
-      weatherData?.hourly?.precipitation_probability?.[currentHourIndex],
-    precipitation: weatherData?.hourly?.precipitation?.[currentHourIndex],
-    rain: weatherData?.hourly?.rain?.[currentHourIndex],
-    showers: weatherData?.hourly?.showers?.[currentHourIndex],
-    snowfall: weatherData?.hourly?.snowfall?.[currentHourIndex],
-    snow_depth: weatherData?.hourly?.snow_depth?.[currentHourIndex],
-    weatherCode: weatherData?.hourly?.weather_code?.[currentHourIndex],
-    pressure_msl: weatherData?.hourly?.pressure_msl?.[currentHourIndex],
-    cloud_cover: weatherData?.hourly?.cloud_cover?.[currentHourIndex],
-    visibility: weatherData?.hourly?.visibility?.[currentHourIndex],
-    windSpeed: weatherData?.hourly?.wind_speed_10m?.[currentHourIndex],
-    wind_speed_80m: weatherData?.hourly?.wind_speed_80m?.[currentHourIndex],
-    wind_speed_120m: weatherData?.hourly?.wind_speed_120m?.[currentHourIndex],
-    wind_direction_10m:
-      weatherData?.hourly?.wind_direction_10m?.[currentHourIndex],
-    wind_direction_80m:
-      weatherData?.hourly?.wind_direction_80m?.[currentHourIndex],
-    wind_direction_120m:
-      weatherData?.hourly?.wind_direction_120m?.[currentHourIndex],
-    wind_gusts_10m: weatherData?.hourly?.wind_gusts_10m?.[currentHourIndex],
-    temperature_80m: weatherData?.hourly?.temperature_80m?.[currentHourIndex],
-    temperature_120m: weatherData?.hourly?.temperature_120m?.[currentHourIndex],
-    temperature_180m: weatherData?.hourly?.temperature_180m?.[currentHourIndex],
-    forecast,
-  };
+// Note: The order of weather variables in the URL query and the indices below need to match!
+const weatherData = {
+	current: {
+		time: new Date((Number(current.time()) + utcOffsetSeconds) * 1000),
+		temperature_2m: current.variables(0)!.value(),
+		apparent_temperature: current.variables(1)!.value(),
+		precipitation: current.variables(2)!.value(),
+		rain: current.variables(3)!.value(),
+		showers: current.variables(4)!.value(),
+		snowfall: current.variables(5)!.value(),
+		weather_code: current.variables(6)!.value(),
+		cloud_cover: current.variables(7)!.value(),
+		wind_speed_10m: current.variables(8)!.value(),
+		wind_direction_10m: current.variables(9)!.value(),
+    relative_humidity_2m: current.variables(10)!.value(),
+	},
+	minutely15: {
+		time: Array.from(
+			{ length: (Number(minutely15.timeEnd()) - Number(minutely15.time())) / minutely15.interval() }, 
+			(_ , i) => new Date((Number(minutely15.time()) + i * minutely15.interval() + utcOffsetSeconds) * 1000)
+		),
+		temperature_2m: minutely15.variables(0)!.valuesArray(),
+		relative_humidity_2m: minutely15.variables(1)!.valuesArray(),
+		apparent_temperature: minutely15.variables(2)!.valuesArray(),
+		precipitation: minutely15.variables(3)!.valuesArray(),
+		wind_speed_10m: minutely15.variables(4)!.valuesArray(),
+		weather_code: minutely15.variables(5)!.valuesArray(),
+		wind_direction_10m: minutely15.variables(6)!.valuesArray(),
+	},
+	hourly: {
+		time: Array.from(
+			{ length: (Number(hourly.timeEnd()) - Number(hourly.time())) / hourly.interval() }, 
+			(_ , i) => new Date((Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) * 1000)
+		),
+		temperature_2m: hourly.variables(0)!.valuesArray(),
+		relative_humidity_2m: hourly.variables(1)!.valuesArray(),
+		apparent_temperature: hourly.variables(2)!.valuesArray(),
+		precipitation_probability: hourly.variables(3)!.valuesArray(),
+		rain: hourly.variables(4)!.valuesArray(),
+		showers: hourly.variables(5)!.valuesArray(),
+		weather_code: hourly.variables(6)!.valuesArray(),
+		wind_speed_10m: hourly.variables(7)!.valuesArray(),
+		temperature_80m: hourly.variables(8)!.valuesArray(),
+		uv_index: hourly.variables(9)!.valuesArray(),
+		wind_direction_10m: hourly.variables(10)!.valuesArray(),
+	},
+	daily: {
+		time: Array.from(
+			{ length: (Number(daily.timeEnd()) - Number(daily.time())) / daily.interval() }, 
+			(_ , i) => new Date((Number(daily.time()) + i * daily.interval() + utcOffsetSeconds) * 1000)
+		),
+		weather_code: daily.variables(0)!.valuesArray(),
+		temperature_2m_max: daily.variables(1)!.valuesArray(),
+		temperature_2m_min: daily.variables(2)!.valuesArray(),
+		apparent_temperature_max: daily.variables(3)!.valuesArray(),
+		apparent_temperature_min: daily.variables(4)!.valuesArray(),
+	},
+};
+
+// The 'weatherData' object now contains a simple structure, with arrays of datetimes and weather information
+console.log(
+	`\nCurrent time: ${weatherData.current.time}\n`,
+	`\nCurrent temperature_2m: ${weatherData.current.temperature_2m}`,
+	`\nCurrent apparent_temperature: ${weatherData.current.apparent_temperature}`,
+	`\nCurrent precipitation: ${weatherData.current.precipitation}`,
+	`\nCurrent rain: ${weatherData.current.rain}`,
+	`\nCurrent showers: ${weatherData.current.showers}`,
+	`\nCurrent snowfall: ${weatherData.current.snowfall}`,
+	`\nCurrent weather_code: ${weatherData.current.weather_code}`,
+	`\nCurrent cloud_cover: ${weatherData.current.cloud_cover}`,
+	`\nCurrent wind_speed_10m: ${weatherData.current.wind_speed_10m}`,
+	`\nCurrent wind_direction_10m: ${weatherData.current.wind_direction_10m}`,
+);
+console.log("\nMinutely15 data:\n", weatherData.minutely15)
+console.log("\nHourly data:\n", weatherData.hourly)
+console.log("\nDaily data:\n", weatherData.daily)
+
+return {
+  current_temp: weatherData.current.temperature_2m,
+  current_realfeel_temp: weatherData.current.apparent_temperature,
+  current_humidity: weatherData.current.relative_humidity_2m,
+  current_windspeed: weatherData.current.wind_speed_10m,
+  current_weathercode: weatherData.current.weather_code
+}
 }

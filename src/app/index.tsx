@@ -80,10 +80,6 @@ export default function HomeScreen() {
       ]}
     >
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Image
-          source={require("../../assets/weatherImages/location-pin.png")}
-          style={{ width: 20, height: 22, tintColor: "#c8753a" }}
-        />
         <Text
           style={[
             globalStyles.headerloctime,
@@ -122,7 +118,7 @@ export default function HomeScreen() {
           }}
         >
           <Text style={[globalStyles.temperature, { color: primaryTextColor }]}>
-            {weatherData?.temp?.toFixed(0)}
+            {weatherData?.current_temp.toFixed(0)}
             <Text
               style={{
                 fontSize: 120,
@@ -150,19 +146,19 @@ export default function HomeScreen() {
       <View style={{ flexDirection: "row", gap: 20 }}>
         <Text style={globalStyles.feels}>
           <Text style={{ color: primaryTextColor }}>
-            {weatherData?.feelsLike.toFixed(0)}°
+            {weatherData?.current_realfeel_temp.toFixed(0)}°
           </Text>
           <Text style={{ color: secondaryTextColor }}>feels</Text>
         </Text>
         <Text style={globalStyles.feels}>
           <Text style={{ color: primaryTextColor }}>
-            {weatherData?.humidity.toFixed(0)}%{" "}
+            {weatherData?.current_humidity.toFixed(0)}%{" "}
           </Text>
           <Text style={{ color: secondaryTextColor }}>hum</Text>
         </Text>
         <Text style={globalStyles.feels}>
           <Text style={{ color: primaryTextColor }}>
-            {weatherData?.windSpeed.toFixed(1)}{" "}
+            {weatherData?.current_windspeed.toFixed(0)}mph{" "}
           </Text>
           <Text style={{ color: secondaryTextColor }}>wind</Text>
         </Text>

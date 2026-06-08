@@ -1,5 +1,5 @@
 export default function (weatherData: any) {
-  const weatherCode = weatherData?.weatherCode;
+  const weatherCode = weatherData?.current_weathercode;
   console.log("weather condition:", weatherCode);
   console.log("full weather data:", JSON.stringify(weatherData, null, 2));
 
