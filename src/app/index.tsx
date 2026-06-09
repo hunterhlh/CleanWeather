@@ -1,6 +1,20 @@
-//TODO
-// 1. Make Date and Time update correctly every minute (currently only updates on app load)
-// 2. Dynamically change the weather icon and colors based on the current weather conditions (currently hardcoded to sun and sunny colors)
+//--- TODO ---//
+// Upper the Day of the week
+// Make a night mode
+  // Need a moon vector, would be nice to have the moon state
+  // Need to get a dark color theme going
+  // Need new night descriptions
+// Make the chart
+// Add documentation to the code
+// Create a nice readme
+// Wind direction arrow
+// 
+
+//--- Stretch Goals ---//
+  // Animations
+  // Modal popup for weather alerts
+  // Weather alert notifications
+
 
 import styleChanges from "@/functions/styleChange";
 import { useEffect, useMemo, useState } from "react";
@@ -47,6 +61,7 @@ export default function HomeScreen() {
     secondaryTextColor,
     newImage,
     description,
+    accentColor
   } = weatherData
     ? styleChanges(weatherData)
     : {
@@ -55,6 +70,7 @@ export default function HomeScreen() {
         secondaryTextColor: "#6b6557",
         newImage: "sun.png",
         description: "Sunny",
+        accentColor: "#c8753a"
       };
 
   console.log(
@@ -69,6 +85,8 @@ export default function HomeScreen() {
   const day = today.getDate();
   const month = today.getMonth() + 1;
   const myDate = `${month}/${day}`;
+  const currentHour = new Date().getHours(); 
+
 
   const { weatherDescription } = randoDescription(weatherData);
 
@@ -83,7 +101,7 @@ export default function HomeScreen() {
         <Text
           style={[
             globalStyles.headerloctime,
-            { flex: 1, textAlign: "left", color: "#c8753a" },
+            { flex: 1, textAlign: "left", color: accentColor },
           ]}
         >
           {city.toUpperCase()}, {region.toUpperCase()}
@@ -91,13 +109,13 @@ export default function HomeScreen() {
         <Text
           style={[
             globalStyles.headerloctime,
-            { flex: 1, textAlign: "right", color: "#c8753a" },
+            { flex: 1, textAlign: "right", color: accentColor },
           ]}
         >
-          {new Date().toDateString().slice(0, 3)} • {myDate}
+          {new Date().toDateString().slice(0, 3).toUpperCase()} • {myDate}
         </Text>
       </View>
-      <View style={{ justifyContent: "center", minHeight: height * 0.35 }}>
+      <View style={{ justifyContent: "center", minHeight: height * 0.31 }}>
         <Text
           style={[
             globalStyles.rightNow,
@@ -134,12 +152,12 @@ export default function HomeScreen() {
             style={{
               width: 50,
               height: 50,
-              tintColor: "#c8753a",
+              tintColor: accentColor,
               marginTop: height * 0.05,
             }}
           />
         </View>
-        <Text style={[globalStyles.desc, { color: "#c8753a" }]}>
+        <Text style={[globalStyles.desc, { color: accentColor }]}>
           {weatherDescription}
         </Text>
       </View>
@@ -148,19 +166,19 @@ export default function HomeScreen() {
           <Text style={{ color: primaryTextColor }}>
             {weatherData?.current_realfeel_temp.toFixed(0)}°
           </Text>
-          <Text style={{ color: secondaryTextColor }}>feels</Text>
+          <Text style={{ color: secondaryTextColor, fontSize: 15 }}>feels</Text>
         </Text>
         <Text style={globalStyles.feels}>
           <Text style={{ color: primaryTextColor }}>
             {weatherData?.current_humidity.toFixed(0)}%{" "}
           </Text>
-          <Text style={{ color: secondaryTextColor }}>hum</Text>
+          <Text style={{ color: secondaryTextColor, fontSize: 15 }}>hum</Text>
         </Text>
         <Text style={globalStyles.feels}>
           <Text style={{ color: primaryTextColor }}>
             {weatherData?.current_windspeed.toFixed(0)}mph{" "}
           </Text>
-          <Text style={{ color: secondaryTextColor }}>wind</Text>
+          <Text style={{ color: secondaryTextColor,fontSize: 15 }}>wind</Text>
         </Text>
       </View>
       <View
@@ -171,11 +189,26 @@ export default function HomeScreen() {
           marginHorizontal: width * 0.005,
         }}
       ></View>
+
+
+
+
+
+      {/* THIS IS THE CHART SECTION */}
       <View>
-        <Text style={[globalStyles.desc, { color: "#c8753a" }]}>
-          This is a placeholder for the chart
+        <Text style={[globalStyles.rightNow, { color: accentColor, marginTop: height * 0.02 }]}>
+          NEXT 8 HOURS
         </Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          
+        <Text>{currentHour}</Text>
+        <Text>Bar 2</Text>
+        <Text>Bar 3</Text>
+        </View>
       </View>
+
+
+
       <View
         style={{
           borderBottomWidth: 1,
@@ -185,22 +218,22 @@ export default function HomeScreen() {
         }}
       ></View>
       <View>
-        <View style={{ flexDirection: "row", gap: 10 }}>
-          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+        <View style={{ flexDirection: "row", gap: 10, alignItems: "center"}}>
+          <Text style={[globalStyles.dailyForecast, { color: accentColor, width: width * .20 }]}>
             TODAY
           </Text>
           <Image
             source={newImage}
-            style={{ width: 40, height: 40, tintColor: "#c8753a" }}
+            style={{ width: 35, height: 35, tintColor: secondaryTextColor}}
           />
-          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+          <Text style={[globalStyles.dailyforecastDesc, { color: secondaryTextColor, flex: 1, textAlign: "left", marginLeft: 25 }]}>
             {description}
           </Text>
-          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
-            {weatherData?.daily_temp_min?.[0]?.toFixed(0)}°
-          </Text>
-          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+          <Text style={[globalStyles.dailyforecastDesc, { color: primaryTextColor, textAlign: "right" }]}>
             {weatherData?.daily_temp_max?.[0]?.toFixed(0)}°
+          </Text>
+          <Text style={[globalStyles.dailyforecastDesc, { color: secondaryTextColor, textAlign: "right" }]}>
+            {weatherData?.daily_temp_min?.[0]?.toFixed(0)}°
           </Text>
         </View>
         ,
@@ -221,9 +254,9 @@ export default function HomeScreen() {
                       marginHorizontal: width * 0.005,
                     }}
                   />
-                  <View style={{ flexDirection: "row", gap: 10 }}>
+                  <View style={{ flexDirection: "row", gap: 10, alignItems: "center"  }}>
                     <Text
-                      style={[globalStyles.dailyForecast, { color: "#c8753a" }]}
+                      style={[globalStyles.dailyForecast, { color: primaryTextColor, width: width * .20 }]}
                     >
                       {new Date(
                         today.getFullYear(),
@@ -231,35 +264,35 @@ export default function HomeScreen() {
                         today.getDate() + i + 1,
                       )
                         .toDateString()
-                        .slice(0, 3)}
+                        .slice(0, 3).toUpperCase()}
                     </Text>
                     <Image
                       source={newImage}
-                      style={{ width: 40, height: 40, tintColor: "#c8753a" }}
+                      style={{ width: 35, height: 35, tintColor: secondaryTextColor }}
                     />
                     <Text
                       style={[
-                        globalStyles.dailyForecast,
-                        { color: "#c8753a", flex: 1, textAlign: "center" },
+                        globalStyles.dailyforecastDesc,
+                        { color: secondaryTextColor,  textAlign: "left", flex: 1, marginLeft: 25 },
                       ]}
                     >
                       {description}
                     </Text>
                     <Text
                       style={[
-                        globalStyles.dailyForecast,
-                        { color: "#c8753a", flex: 1, textAlign: "right" },
-                      ]}
-                    >
-                      {weatherData?.daily_temp_min?.[i]?.toFixed(0)}°
-                    </Text>
-                    <Text
-                      style={[
-                        globalStyles.dailyForecast,
-                        { color: "#c8753a", flex: 1, textAlign: "right" },
+                        globalStyles.dailyforecastDesc,
+                        { color: primaryTextColor, textAlign: "right" },
                       ]}
                     >
                       {weatherData?.daily_temp_max?.[i]?.toFixed(0)}°
+                    </Text>
+                    <Text
+                      style={[
+                        globalStyles.dailyforecastDesc,
+                        { color: secondaryTextColor, textAlign: "right" },
+                      ]}
+                    >
+                      {weatherData?.daily_temp_min?.[i]?.toFixed(0)}°
                     </Text>
                   </View>
                 </View>,

@@ -2,9 +2,10 @@ export default function (weatherData: any) {
   const weatherCondition = weatherData?.current_weathercode;
 
   let newImage: any = require("../../assets/weatherImages/sun.png");
-  let primaryTextColor: any = "#e8d5a3";
-  let secondaryTextColor: any = "#1c1a16";
-  let backgroundColor: any = "#6b6557";
+  let primaryTextColor: any = "#1c1a16";
+  let secondaryTextColor: any = "#6b6557";
+  let backgroundColor: any = "#ede4cf";
+  let accentColor: any = "#c8753a"
   let description: any = "Sunny";
 
   if (
@@ -25,9 +26,10 @@ export default function (weatherData: any) {
     weatherCondition === 96 ||
     weatherCondition === 99
   ) {
-    backgroundColor = "#1d242e";
+    backgroundColor = "#252d39";
     primaryTextColor = "#eef2f7";
     secondaryTextColor = "#8d97a6";
+    accentColor = "#7fb3e0"
     newImage = require("../../assets/weatherImages/rain.png");
     description = "Rainy";
   } else if (
@@ -38,15 +40,17 @@ export default function (weatherData: any) {
     weatherCondition === 85 ||
     weatherCondition === 86
   ) {
-    backgroundColor = "#ffffff";
+    backgroundColor = "#dde4ec";
     primaryTextColor = "#1d2530";
     secondaryTextColor = "#6a7585";
+    accentColor = "#5d7d9e"
     newImage = require("../../assets/weatherImages/snow.png");
     description = "Snowy";
   } else if (weatherCondition === 0) {
-    backgroundColor = "#e8d5a3";
+    backgroundColor = "#ede4cf";
     primaryTextColor = "#1c1a16";
     secondaryTextColor = "#6b6557";
+    accentColor = "#c8753a"
     newImage = require("../../assets/weatherImages/sun.png");
     description = "Sunny";
   } else if (
@@ -56,9 +60,10 @@ export default function (weatherData: any) {
     weatherCondition === 45 ||
     weatherCondition === 48
   ) {
-    backgroundColor = "#b8bcc4";
+    backgroundColor = "#d5d7d4";
     primaryTextColor = "#23262a";
-    secondaryTextColor = "#616161";
+    secondaryTextColor = "#74766f";
+    accentColor = "#6c7a82"
     newImage = require("../../assets/weatherImages/cloud.png");
     description = "Cloudy";
   }
@@ -68,5 +73,6 @@ export default function (weatherData: any) {
     secondaryTextColor,
     newImage,
     description,
+    accentColor
   };
 }
