@@ -185,56 +185,88 @@ export default function HomeScreen() {
         }}
       ></View>
       <View>
-        <View>
-          <Text style={[globalStyles.desc, { color: "#c8753a" }]}>TODAY</Text>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+            TODAY
+          </Text>
+          <Image
+            source={newImage}
+            style={{ width: 40, height: 40, tintColor: "#c8753a" }}
+          />
+          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+            {description}
+          </Text>
+          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+            {weatherData?.daily_temp_min?.[0]?.toFixed(0)}°
+          </Text>
+          <Text style={[globalStyles.dailyForecast, { color: "#c8753a" }]}>
+            {weatherData?.daily_temp_max?.[0]?.toFixed(0)}°
+          </Text>
         </View>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: "#6b655740",
-            marginTop: height * 0.02,
-            marginHorizontal: width * 0.005,
-          }}
-        ></View>
-        {weatherData?.forecast?.map((day: any, i: number) => {
-          const { newImage, description } = styleChanges({
-            weatherCode: day.weatherCode,
-          });
-          return (
-            <View key={i} style={{ flexDirection: "row", gap: 10 }}>
-              <Text style={[globalStyles.desc, { color: "#c8753a" }]}>
-                {new Date(
-                  today.getFullYear(),
-                  today.getMonth(),
-                  today.getDate() + i + 1,
-                )
-                  .toDateString()
-                  .slice(0, 3)}
-              </Text>
-
-              <Image
-                source={newImage}
-                style={{
-                  width: 50,
-                  height: 50,
-                  tintColor: "#c8753a",
-                }}
-              />
-
-              <Text style={[globalStyles.desc, { color: "#c8753a" }]}>
-                {description}
-              </Text>
-
-              <Text style={[globalStyles.desc, { color: "#c8753a" }]}>
-                {day?.temp?.toFixed(0)}°
-              </Text>
-
-              <Text style={[globalStyles.desc, { color: "#c8753a" }]}>
-                {day?.temp?.toFixed(0)}°
-              </Text>
-            </View>
-          );
-        })}
+        ,
+        {weatherData &&
+          (() => {
+            const rows = [];
+            for (let i = 0; i < 4; i++) {
+              const weatherCode = weatherData.daily_weathercode[i];
+              const { newImage, description } = styleChanges({
+                current_weathercode: weatherCode,
+              });
+              rows.push(
+                <View key={i}>
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: "#6b655740",
+                      marginHorizontal: width * 0.005,
+                    }}
+                  />
+                  <View style={{ flexDirection: "row", gap: 10 }}>
+                    <Text
+                      style={[globalStyles.dailyForecast, { color: "#c8753a" }]}
+                    >
+                      {new Date(
+                        today.getFullYear(),
+                        today.getMonth(),
+                        today.getDate() + i + 1,
+                      )
+                        .toDateString()
+                        .slice(0, 3)}
+                    </Text>
+                    <Image
+                      source={newImage}
+                      style={{ width: 40, height: 40, tintColor: "#c8753a" }}
+                    />
+                    <Text
+                      style={[
+                        globalStyles.dailyForecast,
+                        { color: "#c8753a", flex: 1, textAlign: "center" },
+                      ]}
+                    >
+                      {description}
+                    </Text>
+                    <Text
+                      style={[
+                        globalStyles.dailyForecast,
+                        { color: "#c8753a", flex: 1, textAlign: "right" },
+                      ]}
+                    >
+                      {weatherData?.daily_temp_min?.[i]?.toFixed(0)}°
+                    </Text>
+                    <Text
+                      style={[
+                        globalStyles.dailyForecast,
+                        { color: "#c8753a", flex: 1, textAlign: "right" },
+                      ]}
+                    >
+                      {weatherData?.daily_temp_max?.[i]?.toFixed(0)}°
+                    </Text>
+                  </View>
+                </View>,
+              );
+            }
+            return rows;
+          })()}
       </View>
     </ScrollView>
   );

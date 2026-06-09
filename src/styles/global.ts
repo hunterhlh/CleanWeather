@@ -34,4 +34,9 @@ export const globalStyles = StyleSheet.create({
     fontFamily: "JetBrainsMono",
     fontWeight: "400",
   },
+  dailyForecast: {
+    fontSize: 19,
+    fontFamily: "JetBrainsMono",
+    fontWeight: "400",
+  },
 });
