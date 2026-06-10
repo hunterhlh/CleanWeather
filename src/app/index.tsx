@@ -24,6 +24,7 @@ import randoDescription from "../functions/randoDescription";
 import useLocation from "../functions/useLocation";
 import { globalStyles } from "../styles/global";
 
+
 const { height, width } = Dimensions.get("window");
 
 export default function HomeScreen() {
@@ -86,6 +87,11 @@ export default function HomeScreen() {
   const month = today.getMonth() + 1;
   const myDate = `${month}/${day}`;
   const currentHour = new Date().getHours(); 
+
+
+
+  const hourlyTemps = [60, 74, 76, 78, 80, 79, 77, 75];
+
 
 
   const { weatherDescription } = randoDescription(weatherData);
@@ -192,20 +198,71 @@ export default function HomeScreen() {
 
 
 
-
-
       {/* THIS IS THE CHART SECTION */}
-      <View>
-        <Text style={[globalStyles.rightNow, { color: accentColor, marginTop: height * 0.02 }]}>
-          NEXT 8 HOURS
-        </Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          
-        <Text>{currentHour}</Text>
-        <Text>Bar 2</Text>
-        <Text>Bar 3</Text>
-        </View>
-      </View>
+
+        <Text style={[globalStyles.rightNow, {marginTop: 10}]}>
+        NEXT 8 HOURS
+      </Text>
+
+      <View
+  style={{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+  }}
+>
+
+
+
+  
+  
+  {hourlyTemps.map((temp, index) => (
+
+    <View
+      key={index}
+      style={{
+        alignItems: "center",
+      }}
+    >
+
+      <Text style={{ color: primaryTextColor, marginBottom: 5, marginTop: 10 }}>
+        {temp}%
+      </Text>
+    
+    <View
+      style={{
+        width: 20,
+        height: 100,
+        backgroundColor: "#6b655740",
+        borderRadius: 999,
+        overflow: "hidden",
+        justifyContent: "flex-end",
+      }}
+    >
+      
+      <View
+        style={{
+          width: "100%",
+          height: `${temp}%`,
+          backgroundColor: accentColor,
+        }}
+      />
+
+      
+      
+    </View>
+      <Text style={{ color: primaryTextColor, marginBottom: 5 }}>
+        {currentHour%12}
+      </Text>
+
+    </View>
+  ))}
+</View>
+
+
+
+
+
 
 
 
