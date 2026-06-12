@@ -74,13 +74,13 @@ export default function HomeScreen() {
         accentColor: "#c8753a"
       };
 
-  console.log(
-    backgroundColor,
-    primaryTextColor,
-    secondaryTextColor,
-    newImage,
-    description,
-  );
+  // console.log(
+  //   backgroundColor,
+  //   primaryTextColor,
+  //   secondaryTextColor,
+  //   newImage,
+  //   description,
+  // );
 
   const today = new Date();
   const day = today.getDate();
@@ -90,11 +90,13 @@ export default function HomeScreen() {
 
 
 
-  const hourlyTemps = [60, 74, 76, 78, 80, 79, 77, 75];
-
 
 
   const { weatherDescription } = randoDescription(weatherData);
+  
+
+const hourlypercept = weatherData?.hourlyperceptsWeatherdata ?? [];
+
 
   return (
     <ScrollView
@@ -197,10 +199,10 @@ export default function HomeScreen() {
       ></View>
 
 
-
       {/* THIS IS THE CHART SECTION */}
 
-        <Text style={[globalStyles.rightNow, {marginTop: 10}]}>
+        <Text style={[globalStyles.rightNow, {marginTop: 10, textAlign: "left",
+              color: secondaryTextColor,}]}>
         NEXT 8 HOURS
       </Text>
 
@@ -216,7 +218,7 @@ export default function HomeScreen() {
 
   
   
-  {hourlyTemps.map((temp, index) => (
+  {hourlypercept.map((temp: number, index: number) => (
 
     <View
       key={index}
@@ -252,7 +254,7 @@ export default function HomeScreen() {
       
     </View>
       <Text style={{ color: primaryTextColor, marginBottom: 5 }}>
-        {currentHour%12}
+        {weatherData?.futureHours?.[index]}
       </Text>
 
     </View>

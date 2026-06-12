@@ -62,11 +62,16 @@ export async function fetchWeather(latitude: string, longitude: string) {
   const elevation = response.elevation();
   const utcOffsetSeconds = response.utcOffsetSeconds();
 
-  console.log(
-    `\nCoordinates: ${latitude}°N ${longitude}°E`,
-    `\nElevation: ${elevation}m asl`,
-    `\nTimezone difference to GMT+0: ${utcOffsetSeconds}s`,
-  );
+
+  let hourlyperceptsWeatherdata: number[] = [];
+  let futureHours: number[] = [];
+
+
+
+  
+  
+
+  
 
   const current = response.current()!;
   const minutely15 = response.minutely15()!;
@@ -128,7 +133,7 @@ export async function fetchWeather(latitude: string, longitude: string) {
       temperature_2m: hourly.variables(0)!.valuesArray(),
       relative_humidity_2m: hourly.variables(1)!.valuesArray(),
       apparent_temperature: hourly.variables(2)!.valuesArray(),
-      precipitation_probability: hourly.variables(3)!.valuesArray(),
+      precipitation_probability_mean: hourly.variables(3)!.valuesArray(),
       rain: hourly.variables(4)!.valuesArray(),
       showers: hourly.variables(5)!.valuesArray(),
       weather_code: hourly.variables(6)!.valuesArray(),
@@ -158,22 +163,44 @@ export async function fetchWeather(latitude: string, longitude: string) {
   };
 
   // The 'weatherData' object now contains a simple structure, with arrays of datetimes and weather information
-  console.log(
-    `\nCurrent time: ${weatherData.current.time}\n`,
-    `\nCurrent temperature_2m: ${weatherData.current.temperature_2m}`,
-    `\nCurrent apparent_temperature: ${weatherData.current.apparent_temperature}`,
-    `\nCurrent precipitation: ${weatherData.current.precipitation}`,
-    `\nCurrent rain: ${weatherData.current.rain}`,
-    `\nCurrent showers: ${weatherData.current.showers}`,
-    `\nCurrent snowfall: ${weatherData.current.snowfall}`,
-    `\nCurrent weather_code: ${weatherData.current.weather_code}`,
-    `\nCurrent cloud_cover: ${weatherData.current.cloud_cover}`,
-    `\nCurrent wind_speed_10m: ${weatherData.current.wind_speed_10m}`,
-    `\nCurrent wind_direction_10m: ${weatherData.current.wind_direction_10m}`,
-  );
-  console.log("\nMinutely15 data:\n", weatherData.minutely15);
-  console.log("\nHourly data:\n", weatherData.hourly);
-  console.log("\nDaily data:\n", weatherData.daily);
+  // console.log(
+  //   `\nCurrent time: ${weatherData.current.time}\n`,
+  //   `\nCurrent temperature_2m: ${weatherData.current.temperature_2m}`,
+  //   `\nCurrent apparent_temperature: ${weatherData.current.apparent_temperature}`,
+  //   `\nCurrent precipitation: ${weatherData.current.precipitation}`,
+  //   `\nCurrent rain: ${weatherData.current.rain}`,
+  //   `\nCurrent showers: ${weatherData.current.showers}`,
+  //   `\nCurrent snowfall: ${weatherData.current.snowfall}`,
+  //   `\nCurrent weather_code: ${weatherData.current.weather_code}`,
+  //   `\nCurrent cloud_cover: ${weatherData.current.cloud_cover}`,
+  //   `\nCurrent wind_speed_10m: ${weatherData.current.wind_speed_10m}`,
+  //   `\nCurrent wind_direction_10m: ${weatherData.current.wind_direction_10m}`,
+  // );
+  //console.log("\nMinutely15 data:\n", weatherData.minutely15);
+  //console.log("\nHourly data:\n", weatherData.hourly);
+  //console.log("\nDaily data:\n", weatherData.daily);
+
+  console.log("Here is a code", weatherData.daily.weather_code)
+
+
+
+
+  const now = weatherData.current.time;
+  const startIndex = weatherData.hourly.time.findIndex((t) => t >= now);
+
+  console.log("Here are the percpt chances", hourlyperceptsWeatherdata)
+
+  hourlyperceptsWeatherdata = Array.from(
+  weatherData.hourly.precipitation_probability_mean!.slice(startIndex, startIndex + 8) ?? []
+);
+
+const hourNow = now.getHours();
+
+for (let i = 0; i < 8; i++) {
+  const futureHour = (hourNow + i) % 24;
+  futureHours.push(futureHour % 12 === 0 ? 12 : futureHour % 12);
+}
+  
 
   return {
     current_temp: weatherData.current.temperature_2m,
@@ -184,5 +211,9 @@ export async function fetchWeather(latitude: string, longitude: string) {
     daily_weathercode: weatherData.daily.weather_code,
     daily_temp_max: weatherData.daily.temperature_2m_max,
     daily_temp_min: weatherData.daily.temperature_2m_min,
+    hourlyperceptsWeatherdata: hourlyperceptsWeatherdata,
+    futureHours: futureHours,
   };
+
+  
 }
